@@ -7,61 +7,86 @@
     android:id="@+id/layoutnotas"
     android:orientation="vertical"
     tools:context=".notas">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <FrameLayout
-            android:layout_gravity="right"
             android:id="@+id/container"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
         </FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
         <TextView
             android:id="@+id/notasbemvindo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
             android:text="Bem vindo "
             android:textSize="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             />
+
         <TextView
-            android:layout_gravity="center"
+            android:id="@+id/tnotas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:text="Notas"
             android:textSize="20dp"
-            />
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnAdicionar" />
+
         <TextView
+            android:id="@+id/taviso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="Para editar uma nota, insira o texto na nova anotação e clique na anotação a ser substituída."
             android:textSize="15dp"
-            />
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/notasbemvindo" />
+
         <EditText
             android:id="@+id/adcanot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nova anotação"
-            />
+            android:hint="Nova/Editar anotação"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/taviso" />
+
         <Button
             android:id="@+id/btnAdicionar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Adicionar"
-            android:layout_gravity="right"/>
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/adcanot" />
+
+        <Button
+            android:id="@+id/btnSalvar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Salvar no Banco de dados"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btnAdicionar"
+            app:layout_constraintLeft_toLeftOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ListView
             android:id="@+id/listView"
-            android:layout_width="fill_parent"
-            android:layout_height="1339dp" />
-
-
-
+            android:layout_width="match_parent"
+            android:layout_height="1000dp" />
     </LinearLayout>
+
 </ScrollView>
 

@@ -12,9 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Appfinal">
         <activity
-            android:name=".cadastrados"
-            android:exported="false" />
-        <activity
             android:name=".notas"
             android:exported="false" />
         <activity

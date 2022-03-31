@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +19,7 @@ public class Cadastro extends AppCompatActivity implements View.OnClickListener
     EditText usuario;
     EditText senha;
     Button btncadastrar;
-    pessoaBD db;
+    AppDataBase AppDataBase;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -29,7 +30,7 @@ public class Cadastro extends AppCompatActivity implements View.OnClickListener
         senha = (EditText) findViewById(R.id.editcadastrosenha);
         btncadastrar = (Button) findViewById(R.id.btnCadastrar);
         btncadastrar.setOnClickListener(this);
-        db = new pessoaBD(this);
+        AppDataBase = new AppDataBase(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -42,20 +43,17 @@ public class Cadastro extends AppCompatActivity implements View.OnClickListener
             p.setNome(nome.getText().toString().trim());
             p.setUsuario(usuario.getText().toString().trim());
             p.setSenha(senha.getText().toString().trim());
-            List<pessoa> pessoas = db.findAll();
-            for (int i = 0; i < pessoas.size(); i++)
-            {
-                if (usuario.getText().toString().trim().equals(pessoas.get(i).getUsuario()))
-                {
-                   Toast.makeText(getApplicationContext(),"Usuario já existente",Toast.LENGTH_SHORT).show();
-
+            boolean exist=false;
+            for(pessoa objpessoa: AppDataBase.selectPessoa()) {
+                if (usuario.getText().toString().trim().equals(objpessoa.getUsuario())) {
+                      Toast.makeText(getApplicationContext(), "Usuario já existente", Toast.LENGTH_SHORT).show();
+                    exist=true;
                 }
-                else
-                {
-                    db.save(p);
-                    Toast.makeText(getApplicationContext(),"Cadastro Realizado com Sucesso",Toast.LENGTH_SHORT);
-                    finish();
-                }
+            }
+            if(exist==false) {
+                AppDataBase.insert("pessoa", p);
+                Toast.makeText(getApplicationContext(), "Cadastro Realizado com Sucesso", Toast.LENGTH_SHORT);
+                finish();
             }
         }
     }

@@ -1,10 +1,6 @@
 package com.example.appfinal;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 
 import android.os.Bundle;
@@ -13,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -29,56 +24,99 @@ public class notas extends AppCompatActivity {
     private TextView bvnome;
     private EditText novaanot;
     private Button btnAdicionar;
-    private ArrayList<String> lista;
-    private notaBD ndb;
-    private pessoaBD db;
+    private Button btnSalvar;
+    private AppDataBase AppDataBase ;
+    private ArrayList<String> notas;
 
+    private Bundle savedInstanceState;
+    private Bundle args;
     private Boolean on=false;
+    private int idpessoa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notas);
-      //  List<nota> not = (List<nota>) ndb.findAll();
-      //  ndb = new notaBD(this);
+        AppDataBase = new AppDataBase(this);
 
+        args = getIntent().getExtras();
 
-
-        String nome = getIntent().getStringExtra("nome");
-
+        String nome = args.getString("nome");
+        idpessoa = args.getInt("id");
+        System.out.println(idpessoa);
         bvnome = (TextView) findViewById(R.id.notasbemvindo);
         bvnome.setText("Bem vindo "+nome);
         listView = (ListView) findViewById(R.id.listView);
         novaanot = (EditText) findViewById(R.id.adcanot);
         btnAdicionar = (Button) findViewById(R.id.btnAdicionar);
-
-        lista = new ArrayList<>();
-
-
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,lista);
+        btnSalvar = (Button) findViewById(R.id.btnSalvar);
 
 
-        btnAdicionar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(view.getId()==btnAdicionar.getId()) {
-                    lista.add(novaanot.getText().toString().trim());
-                    novaanot.setText("");
-                    adapter.notifyDataSetChanged();
-                }
-                }
-        });
-        listView.setAdapter(adapter);
+        notas = new ArrayList<>();
+        for(nota objnota : AppDataBase.selectNota()){
+            if(objnota.getIdpessoa()==idpessoa){
+                notas.add(objnota.getNota());
+            }
+        }
+        if(notas.isEmpty())
+        {
+            nota n = new nota();
+            n.setIdpessoa(idpessoa);
+            n.setNota("primeira nota");
+            AppDataBase.insert("nota",n);
+            notas.add("primeira nota");
+        }
+
+
+
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,notas);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                lista.set(i,novaanot.getText().toString().trim());
-                listView.setAdapter(adapter);
+                notas.set(i,novaanot.getText().toString().trim());
                 novaanot.setText("");
+                adapter.notifyDataSetChanged();
             }
         });
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        btnSalvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(view.getId()==btnSalvar.getId())
+                {
+                    for(nota objnota : AppDataBase.selectNota())
+                    {
+                        if(objnota.getIdpessoa()==idpessoa)
+                        {   AppDataBase.delete("nota",idpessoa,"idpessoa=?");
+                            for(String nota: notas)
+                            {
+                                nota n = new nota();
+                                n.setIdpessoa(idpessoa);
+                                n.setNota(nota);
+
+                                AppDataBase.insert("nota",n);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        btnAdicionar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(view.getId()==btnAdicionar.getId())
+                {   boolean esc=false;
+                    notas.add(novaanot.getText().toString().trim());
+                    novaanot.setText("");
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+        listView.setAdapter(adapter);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
      }
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_main,menu);
@@ -101,6 +139,7 @@ public class notas extends AppCompatActivity {
 
 
             Toast.makeText(getApplicationContext(),"Menu",Toast.LENGTH_SHORT).show();
+
             return true;
         }
         if(id == android.R.id.home){

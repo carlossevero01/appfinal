@@ -36,9 +36,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnLogin;
     EditText usuario;
     EditText senha;
-    pessoaBD db;
+    AppDataBase AppDataBase = new AppDataBase(this);
     TextView conselho;
-    Button vercadastrados;                          //Retirar
+    Bundle args= new Bundle();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     senha = (EditText) findViewById(R.id.editSenha);
     btnCadastro.setOnClickListener(this);
     btnLogin.setOnClickListener(this);
-    db = new pessoaBD(this);
-    vercadastrados = (Button) findViewById(R.id.btnvercadastro);            //Retirar
-    vercadastrados.setOnClickListener(this);
+
+
     }
 
     @Override
@@ -65,37 +65,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this,Cadastro.class);
             startActivity(intent);
         }
-        if(view.getId()==vercadastrados.getId()){               //Retirar essa parte
-            List<pessoa> pessoas = db.findAll();
-            for(int i=0; i<pessoas.size();i++){
-                System.out.print(pessoas.get(i).getId()+"");
-                System.out.print(pessoas.get(i).getNome()+"");
-                System.out.print(pessoas.get(i).getUsuario()+"");
 
-            }
-            Intent intent = new Intent(this,cadastrados.class);
-            intent.putExtra("objList",(Serializable) pessoas);
-            startActivity(intent);
-        }                                                       //Retirar
         if(view.getId()==btnLogin.getId())
         {
-            List<pessoa> pessoas = db.findAll();
             Intent intent = new Intent(this,notas.class);
             Boolean verifica=false;
-            for(int i=0; i<pessoas.size();i++)
-            {
-                if(usuario.getText().toString().trim().equals(pessoas.get(i).getUsuario())&&
-                        senha.getText().toString().trim().equals(pessoas.get(i).getSenha()))
-                {
-                    intent.putExtra("nome",pessoas.get(i).getNome());
-                    intent.putExtra("id",pessoas.get(i).getId());
-                    intent.putExtra("usuario",pessoas.get(i).getUsuario());
-                    startActivity(intent);
+            for(pessoa objpessoa: AppDataBase.selectPessoa()) {
+                if (usuario.getText().toString().trim().equals(objpessoa.getUsuario())&&senha.getText().toString().trim().equals(objpessoa.getSenha())) {
                     verifica=true;
+                    args.putInt("id",objpessoa.getId());
+                    args.putString("nome",objpessoa.getNome());
+                    args.putString("usuario",objpessoa.getUsuario());
+                    intent.putExtras(args);
+                    startActivity(intent);
                 }
-
             }
-            if(!verifica){
+            if(verifica) {
+
+            }if(verifica==false){
                 Toast.makeText(getApplicationContext(),"Usuario ou senha incorreto",Toast.LENGTH_SHORT).show();
 
             }
