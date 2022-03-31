@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Note</string>
+    <string-array name="notas">
+        <item>Primeira nota</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Menu</string>
+    <string-array name="Menufragment">
+        <item>imgperfil</item>
+        <item>Perfil</item>
+        <item>Deletar Cadastro</item>
+    </string-array>
+</resources>
