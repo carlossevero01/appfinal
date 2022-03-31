@@ -28,10 +28,11 @@ public class notas extends AppCompatActivity {
     private AppDataBase AppDataBase ;
     private ArrayList<String> notas;
 
-    private Bundle savedInstanceState;
+
     private Bundle args;
     private Boolean on=false;
     private int idpessoa;
+    private String usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -44,6 +45,7 @@ public class notas extends AppCompatActivity {
 
         String nome = args.getString("nome");
         idpessoa = args.getInt("id");
+        usuario = args.getString("usuario");
         System.out.println(idpessoa);
         bvnome = (TextView) findViewById(R.id.notasbemvindo);
         bvnome.setText("Bem vindo "+nome);
@@ -54,7 +56,8 @@ public class notas extends AppCompatActivity {
 
 
         notas = new ArrayList<>();
-        for(nota objnota : AppDataBase.selectNota()){
+        List<nota> notasss = AppDataBase.selectNota();
+        for(nota objnota : notasss){
             if(objnota.getIdpessoa()==idpessoa){
                 notas.add(objnota.getNota());
             }
@@ -84,8 +87,8 @@ public class notas extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(view.getId()==btnSalvar.getId())
-                {
-                    for(nota objnota : AppDataBase.selectNota())
+                {   List<nota> notasss = AppDataBase.selectNota();
+                    for(nota objnota : notasss)
                     {
                         if(objnota.getIdpessoa()==idpessoa)
                         {   AppDataBase.delete("nota",idpessoa,"idpessoa=?");
@@ -124,8 +127,7 @@ public class notas extends AppCompatActivity {
     }
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
-
-        FragmentMenu frag = (FragmentMenu) new FragmentMenu();
+        FragmentMenu frag = (FragmentMenu) new FragmentMenu(idpessoa,usuario);
         if(id == R.id.menuexpansive){
             if(!on){
                getSupportFragmentManager().beginTransaction()

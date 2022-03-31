@@ -3,11 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/carlo/AndroidStudioProjects/appfinal/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.195" />
+        <entry key="..\:/Users/carlo/AndroidStudioProjects/appfinal/app/src/main/res/drawable/ic_baseline_menu_open_24.xml" value="0.1" />
         <entry key="..\:/Users/carlo/AndroidStudioProjects/appfinal/app/src/main/res/layout/activity_cadastrados.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/carlo/AndroidStudioProjects/appfinal/app/src/main/res/layout/activity_cadastro.xml" value="0.25" />
         <entry key="..\:/Users/carlo/AndroidStudioProjects/appfinal/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/carlo/AndroidStudioProjects/appfinal/app/src/main/res/layout/activity_notas.xml" value="0.22" />
-        <entry key="..\:/Users/carlo/AndroidStudioProjects/appfinal/app/src/main/res/layout/fragment_menu.xml" value="0.18206521739130435" />
+        <entry key="..\:/Users/carlo/AndroidStudioProjects/appfinal/app/src/main/res/layout/fragment_menu.xml" value="0.25" />
         <entry key="..\:/Users/carlo/AndroidStudioProjects/appfinal/app/src/main/res/menu/menu_exerc4.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/carlo/AndroidStudioProjects/appfinal/app/src/main/res/menu/menu_main.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/carlo/AndroidStudioProjects/appfinal/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />

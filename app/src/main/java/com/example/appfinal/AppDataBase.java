@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppDataBase extends SQLiteOpenHelper {
-    public static final String DB_NAME = "pessoa.sqlite";
-    public static final int DB_VERSION = 1;
-
+    private static final String TAG="sql";
+    private static final String DB_NAME = "pessoa.sqlite";
+    private static final int DB_VERSION = 1;
 
     public AppDataBase(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -26,54 +26,55 @@ public class AppDataBase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        SQLiteDatabase db = getWritableDatabase();
-        String tabelaCliente = "create table if not exists pessoa (_id integer primary key autoincrement, nome text, usuario text, senha text);";
+
+        String tabelaCliente = "CREATE TABLE IF NOT EXISTS pessoa (_id integer PRIMARY KEY AUTOINCREMENT, nome text, usuario text, senha text);";
         String tabelaNota = "CREATE TABLE IF NOT EXISTS nota (_id integer PRIMARY KEY AUTOINCREMENT, idpessoa integer, nota text);";
-        try {
-            db.execSQL(tabelaCliente);
-            db.execSQL(tabelaNota);
-        } catch (SQLException e) {
-            Log.e("DB_LOG", "onCreate:" + e.getLocalizedMessage());
-        } finally {
-          //  db.close();
-        }
+
+            Log.e(TAG,"criando a tabela pessoa");
+            sqLiteDatabase.execSQL(tabelaCliente);
+            Log.e(TAG,"tabela pessoa criada");
+            Log.e(TAG,"criando a tabela nota");
+            sqLiteDatabase.execSQL(tabelaNota);
+            Log.e(TAG,"tabela nota criada");
 
     }
 
+
+
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
 
     }
 
     public boolean insert(String tabela, pessoa p) {
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("nome", p.getNome());
-        values.put("usuario", p.getUsuario());
-        values.put("senha", p.getSenha());
         boolean V = false;
-
         try {
+            ContentValues values = new ContentValues();
+            values.put("nome", p.getNome());
+            values.put("usuario", p.getUsuario());
+            values.put("senha", p.getSenha());
+
             V = db.insert(tabela, null, values) > 0;
         } catch (SQLException e) {
-            Log.e("DB_NAME", "onINSERT" + e.getLocalizedMessage());
+            Log.e(TAG, "onINSERT" + e.getLocalizedMessage());
         } finally {
-         //   db.close();
+       //     db.close();
         }
         return V;
     }
 
     public boolean insert(String tabela, nota n) {
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("idpessoa", n.getIdpessoa());
-        values.put("nota", n.getNota());
-        boolean V = false;
 
+        boolean V = false;
         try {
+            ContentValues values = new ContentValues();
+            values.put("idpessoa", n.getIdpessoa());
+            values.put("nota", n.getNota());
             V = db.insert(tabela, null, values) > 0;
         } catch (SQLException e) {
-            Log.e("DB_NAME", "onINSERT" + e.getLocalizedMessage());
+            Log.e(TAG, "onINSERT" + e.getLocalizedMessage());
         } finally {
          //    db.close();
         }
@@ -83,10 +84,12 @@ public class AppDataBase extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public List<pessoa> selectPessoa() {
         SQLiteDatabase db = getWritableDatabase();
+
         List<pessoa> retorno = new ArrayList<>();
-        Cursor c;
-        String sqlDeConsulta = "select * from pessoa";
         try{
+
+            Cursor c;
+            String sqlDeConsulta = "SELECT * FROM pessoa;";
             c = db.rawQuery(sqlDeConsulta, null);
             if (c.moveToFirst()) {
                 do {
@@ -100,7 +103,7 @@ public class AppDataBase extends SQLiteOpenHelper {
                 while (c.moveToNext());
             }
         }catch(SQLException e){
-            Log.e("DB_NAME","onSelectPessoa"+e.getLocalizedMessage());
+            Log.e(TAG,"onSelectPessoa"+e.getLocalizedMessage());
         }finally {
           //  db.close();
         }
@@ -112,10 +115,11 @@ public class AppDataBase extends SQLiteOpenHelper {
     public List<nota> selectNota()
     {
         SQLiteDatabase db = getWritableDatabase();
+
         List<nota> retorno = new ArrayList<>();
-        Cursor c;
-        String sqlDeConsulta = "select * from nota";
         try{
+            Cursor c;
+            String sqlDeConsulta = "select * from nota;";
             c = db.rawQuery(sqlDeConsulta, null);
             if (c.moveToFirst())
             {
@@ -130,9 +134,9 @@ public class AppDataBase extends SQLiteOpenHelper {
 
             }
         }catch (SQLException e){
-            Log.e("DB_NAME","onSelectNota"+e.getLocalizedMessage());
+            Log.e(TAG,"onSelectNota"+e.getLocalizedMessage());
         }finally {
-         //   db.close();
+        //    db.close();
         }
 
         return retorno;
@@ -144,9 +148,9 @@ public class AppDataBase extends SQLiteOpenHelper {
         try{
             V= db.delete(tabela,whereClause,new String[]{Integer.toString(id)})>0;
         }catch (SQLException e){
-            Log.e("DB_NAME","DB_onDelete"+e.getLocalizedMessage());
+            Log.e(TAG,"DB_onDelete"+e.getLocalizedMessage());
         }finally {
-         //  db.close();
+       //    db.close();
         }
         return V;
     }
@@ -154,33 +158,35 @@ public class AppDataBase extends SQLiteOpenHelper {
     public boolean updateNota(String tabela,nota n){
         int id = n.getId();
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("idpessoa", n.getIdpessoa());
-        values.put("nota", n.getNota());
+
         boolean V = false;
         try{
+            ContentValues values = new ContentValues();
+            values.put("idpessoa", n.getIdpessoa());
+            values.put("nota", n.getNota());
             V = db.update(tabela,values,"_id=?",new String[]{Integer.toString(id)})>0;
         }catch (SQLException e){
-            Log.e("DB_NAME","DB_onUpdateNota"+e.getLocalizedMessage());
+            Log.e(TAG,"DB_onUpdateNota"+e.getLocalizedMessage());
         }finally {
-          //  db.close();
+        //    db.close();
         }
         return V;
     }
     public boolean updatePessoa(String tabela,pessoa p){
         int id = p.getId();
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("nome", p.getNome());
-        values.put("usuario", p.getUsuario());
-        values.put("senha", p.getSenha());
+
         boolean V = false;
         try{
+            ContentValues values = new ContentValues();
+            values.put("nome", p.getNome());
+            values.put("usuario", p.getUsuario());
+            values.put("senha", p.getSenha());
             V = db.update(tabela,values,"_id=?",new String[]{Integer.toString(id)})>0;
         }catch (SQLException e){
-            Log.e("DB_NAME","DB_onUpdatePessoa"+e.getLocalizedMessage());
+            Log.e(TAG,"DB_onUpdatePessoa"+e.getLocalizedMessage());
         }finally {
-        //    db.close();
+       //     db.close();
         }
         return V;
     }

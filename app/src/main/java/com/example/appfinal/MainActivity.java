@@ -3,7 +3,7 @@ package com.example.appfinal;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,11 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,10 +19,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -36,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnLogin;
     EditText usuario;
     EditText senha;
-    AppDataBase AppDataBase = new AppDataBase(this);
+    AppDataBase AppDataBase;
     TextView conselho;
     Bundle args= new Bundle();
 
@@ -44,18 +40,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    conselho = (TextView) findViewById(R.id.conselho);
+        AppDataBase = new AppDataBase(this);
+
+        btnCadastro = (Button) findViewById(R.id.btnCadastro);
+        btnLogin = (Button) findViewById(R.id.btnlogin);
+        usuario = (EditText) findViewById(R.id.editUsuario);
+        senha = (EditText) findViewById(R.id.editSenha);
+        btnCadastro.setOnClickListener(this);
+        btnLogin.setOnClickListener(this);
+
+        conselho = (TextView) findViewById(R.id.conselho);
         String url = "https://api.adviceslip.com/advice";
         executar t = new executar();
         t.execute(url);
-
-    btnCadastro = (Button) findViewById(R.id.btnCadastro);
-    btnLogin = (Button) findViewById(R.id.btnlogin);
-    usuario = (EditText) findViewById(R.id.editUsuario);
-    senha = (EditText) findViewById(R.id.editSenha);
-    btnCadastro.setOnClickListener(this);
-    btnLogin.setOnClickListener(this);
-
 
     }
 
@@ -70,7 +67,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             Intent intent = new Intent(this,notas.class);
             Boolean verifica=false;
-            for(pessoa objpessoa: AppDataBase.selectPessoa()) {
+            List<pessoa> pessoas = AppDataBase.selectPessoa();
+            for(pessoa objpessoa: pessoas) {
                 if (usuario.getText().toString().trim().equals(objpessoa.getUsuario())&&senha.getText().toString().trim().equals(objpessoa.getSenha())) {
                     verifica=true;
                     args.putInt("id",objpessoa.getId());
@@ -80,9 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     startActivity(intent);
                 }
             }
-            if(verifica) {
-
-            }if(verifica==false){
+            if(verifica==false){
                 Toast.makeText(getApplicationContext(),"Usuario ou senha incorreto",Toast.LENGTH_SHORT).show();
 
             }
